@@ -50,7 +50,7 @@ function Home() {
                 <input
                     type="text"
                     name="search"
-                    placeholder="Search for movies..."
+                    placeholder="Search..."
                     className="search-input"
                     defaultValue={searchQuery}
                 />
