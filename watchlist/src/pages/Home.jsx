@@ -1,59 +1,58 @@
 import MovieCard from "../components/MovieCard";
 import { useState, useEffect } from "react";
 import { searchMovies, getPopularMovies } from "../services/api";
+import { useSearchParams } from "react-router-dom";
 import "../css/Home.css";
 
 function Home() {
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const loadPopularMovies = async () => {
-            try {
-                const popularMovies = await getPopularMovies()
-                setMovies(popularMovies)
-            } catch (err) {
-                console.log(err)
-                setError("Failed to load movies...")
-            }
-                finally {
-                    setLoading(false)
-                }
-        }
+    const searchQuery = searchParams.get("q") || "";
 
-        loadPopularMovies()
-    }, [])
+    useEffect(() => {
+        const loadMovies = async () => {
+            setLoading(true);
+            try {
+                if (searchQuery) {
+                    const searchResults = await searchMovies(searchQuery);
+                    setMovies(searchResults);
+                } else {
+                    const popularMovies = await getPopularMovies();
+                    setMovies(popularMovies);
+                }
+                setError(null);
+            } catch (err) {
+                console.log(err);
+                setError("Failed to load movies...");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadMovies();
+    }, [searchQuery]);
 
     const handleSearch = async (e) => {
-        e.preventDefault()
-        if (!searchQuery.trim()) return
-        if (loading) return
-
-        setLoading(true)
-        try {
-            const searchResults = await searchMovies(searchQuery)
-            setMovies(searchResults)
-            setError(null)
-        } catch (err) {
-            console.log(err)
-            setError("Failed to search movies...")
-        } finally {
-            setLoading(false)
+        e.preventDefault();
+        const form = e.target;
+        const query = form.elements.search.value.trim();
+        if (query) {
+            setSearchParams({ q: query });
         }
-
-
-        setSearchQuery("");
     };
 
     return (
         <div className="home">
             <form onSubmit={handleSearch} className="search-form">
-                <input type="text"
-                    placeholder="Search for movies..." className="search-input"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search for movies..."
+                    className="search-input"
+                    defaultValue={searchQuery}
                 />
                 <button type="submit" className="search-button">Search</button>
             </form>
