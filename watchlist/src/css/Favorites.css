@@ -60,11 +60,11 @@
   }
 
   .movies-grid--favorites {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 100px));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 240px));
   }
 
   .movies-grid--favorites .movie-card {
-    max-width: 100px;
+    max-width: 240px;
   }
 }
 
