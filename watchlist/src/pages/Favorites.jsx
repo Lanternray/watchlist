@@ -8,9 +8,9 @@ function Favorites() {
     if (favorites) {
         return (
             <div className="favorites">
-                <h2>My Favorites</h2>
+                <h2>Saved</h2>
 
-                <div className="movies-grid">
+                <div className="movies-grid movies-grid--favorites">
                     {favorites.map(
                         (movie) =>
                         (
